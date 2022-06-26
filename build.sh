@@ -95,7 +95,7 @@ cat ${tmp_userdata_file}
 ### END USERDATA ###
 
 ### GENERATE ISO ###
-./ubuntu.sh -a -u ${tmp_userdata_file}
+ ./ubuntu.sh -a -r -u ${tmp_userdata_file}
 ### END GENERATE ISO ###
 
 ./virtualbox.sh

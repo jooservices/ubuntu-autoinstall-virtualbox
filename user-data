@@ -1,0 +1,33 @@
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    hostname: "_hostname"
+    password: "_password"
+    realname: "_realname"
+    username: "_username"
+  ssh:
+    allow-pw: false
+    install-server: true
+    authorized-keys:
+    - _ssh_key
+  refresh-installer:
+    update: no
+    channel: edge  
+  update: no
+  packages:
+    - zip
+    - unzip
+    - git
+  #early-commands:
+
+  #late-commands:
+    #- curtin in-target --target=/target -- wget https://raw.githubusercontent.com/jooservices/bash/main/services/git.sh -P /target
+    #- curtin in-target --target=/target -- chmod +x /target/git.sh
+    #- curtin in-target --target=/target -- /target/git.sh
+    
+  #error-commands:
+#user-data:
+#  runcmd:
+#    - curl -L https://raw.githubusercontent.com/jooservices/bash/main/services/git.sh | bash
+#    - curl -L https://raw.githubusercontent.com/jooservices/bash/main/services/docker.sh | bash

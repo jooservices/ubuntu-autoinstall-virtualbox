@@ -71,23 +71,38 @@ append_userdata "    authorized-keys:"
 append_userdata "    - $ssh_key"
 append_userdata "  refresh-installer:"
 append_userdata "    update: yes"
-append_userdata "    channel: edge"
+append_userdata "    channel: 'stable'"
 append_userdata "  update: yes"
 append_userdata "  packages:"
-packages=("zip" "unzip" "git")
+packages=("zip" "unzip" "git" "curl" "wget")
 for package in "${packages[@]}"
 do
     :
     append_userdata "    - ${package}"
 done
 
-#sed -i "s|_hostname|${hostname}|g" "$tmp_userdata_file"
-#sed -i "s|_realname|${realname}|g" "$tmp_userdata_file"
-#sed -i "s|_username|${username}|g" "$tmp_userdata_file"
-#sed -i "s|_password|${password}|g" "$tmp_userdata_file"
-#sed -i "s|_ssh_key|${ssh_key}|g" "$tmp_userdata_file"
+append_userdata "  package_update: true"
+append_userdata "  package_upgrade: true"
 
-#echo "" >> ${tmp_userdata_file}
+name="Viet Vu"
+email="jooservices@gmail.com"
+append_userdata "  user-data:"
+append_userdata "    timezone: Asia/Ho_Chi_Minh"
+append_userdata "    users:"
+append_userdata "      - name: $username"
+append_userdata "        gecos: Viet Vu"
+#append_userdata "        passwd: $password"
+append_userdata "        sudo: ALL=(ALL) NOPASSWD:ALL"
+#append_userdata "        ssh_authorized_keys:"
+#append_userdata "          - $ssh_key:"
+append_userdata "    runcmd:"
+append_userdata "      - cd $username"
+append_userdata "      - su $username"
+append_userdata "      - echo Autoinstall completed under $username"
+append_userdata "      - wget https://raw.githubusercontent.com/jooservices/bash/main/services/git.sh"
+append_userdata "      - git config --global user.email \"${email}\""
+append_userdata "      - git config --global user.name \"${name}\""
+append_userdata "      - ssh-keygen -q -t ed25519 -N '' -f ~/.ssh/id_ed25519 <<<y >/dev/null 2>&1"
 
 log "👍 Builded user-data"
 cat ${tmp_userdata_file}
@@ -95,7 +110,7 @@ cat ${tmp_userdata_file}
 ### END USERDATA ###
 
 ### GENERATE ISO ###
- ./ubuntu.sh -a -r -u ${tmp_userdata_file}
+./ubuntu.sh -a -r -u ${tmp_userdata_file}
 ### END GENERATE ISO ###
 
 ./virtualbox.sh

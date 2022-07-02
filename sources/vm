@@ -1,0 +1,128 @@
+read ssh_key<~/.ssh/id_ed25519.pub
+
+log "\e[32m👷 Build VM\e[0m"
+# Read VM data
+read -e -p $'\e[37mRAM (MB)\e[0m: ' -i "${vm_default_ram}" ram
+read -e -p $'\e[37mCPU\e[0m: ' -i "${vm_default_cpu}" cpu
+read -e -p $'\e[37mStorage (MB)\e[0m: ' -i "${vm_default_storage}" storage
+
+# VM
+export ram
+export cpu
+export storage
+export vmname
+export vmname_slug
+
+# Ubuntu
+
+export ssh_key
+
+#### USERDATA ####
+
+log "\e[32m👷 Creating user-data\e[0m"
+
+append_userdata "#cloud-config"
+append_userdata "autoinstall:"
+append_userdata "  version: 1" # Hard code
+
+## Use user-data instead
+#append_userdata "  identity:"
+#append_userdata "    hostname: $hostname"
+#append_userdata "    password: $password"
+#append_userdata "    realname: $realname"
+#append_userdata "    username: $username"
+#append_userdata "  ssh:"
+#append_userdata "    allow-pw: false"
+#append_userdata "    install-server: true"
+#append_userdata "    authorized-keys:"
+#append_userdata "    - $ssh_key"
+##
+
+# Controls whether the installer updates to a new version available in the given channel before continuing.
+append_userdata "  refresh-installer:"
+append_userdata "    update: yes"
+append_userdata "    channel: 'stable'"
+
+# Whether to update or not.
+append_userdata "  update: yes"
+
+# Install packages
+append_userdata "  packages:"
+packages=("zip" "unzip" "git" "curl" "wget" "openssh-server")
+for package in "${packages[@]}"
+do
+    :
+    append_userdata "    - ${package}"
+done
+
+# Shell commands to run after the install has completed successfully and any updates and packages installed, just before the system reboots
+append_userdata "  late-commands:"
+#append_userdata "    - curtin in-target --target=/target -- apt update"
+#append_userdata "    - curtin in-target --target=/target -- apt upgrade -y"
+append_userdata "    - curtin in-target --target=/target -- wget https://raw.githubusercontent.com/jooservices/bash/main/services/docker.sh"
+
+# Update apt database on first boot (run 'apt-get update').
+#append_userdata "  package_update: yes"
+# Upgrade the instance on first boot
+#append_userdata "  package_upgrade: yes"
+
+# https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+append_userdata "  user-data:"
+append_userdata "    hostname: $hostname"
+append_userdata "    timezone: Asia/Ho_Chi_Minh"
+append_userdata "    users:"
+# Default user creation:
+#
+# Unless you define users, you will get a 'ubuntu' user on Ubuntu systems with the
+# legacy permission (no password sudo, locked user, etc). If however, you want
+# to have the 'ubuntu' user in addition to other users, you need to instruct
+# cloud-init that you also want the default user. To do this use the following
+# syntax:
+#   users:
+#     - default
+#     - bob
+#     - ....
+#  foobar: ...
+#
+# users[0] (the first user in users) overrides the user directive.
+#
+# The 'default' user above references the distro's config:
+# system_info:
+#   default_user:
+#     name: Ubuntu
+#     plain_text_passwd: 'ubuntu'
+#     home: /home/ubuntu
+#     shell: /bin/bash
+#     lock_passwd: True
+#     gecos: Ubuntu
+#     groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
+append_userdata "      - default"
+append_userdata "      - name: $username"
+# The user name's real name
+append_userdata "        gecos: $name"
+#append_userdata "        homedir: /home/$username"
+# When set to true, do not create home directory.
+append_userdata "        no_create_home: false"
+append_userdata "        passwd: $password"
+# Defaults to true. Lock the password to disable password login
+append_userdata "        lock_passwd: false"
+# Allow a user unrestricted sudo access.
+append_userdata "        sudo: ALL=(ALL) NOPASSWD:ALL" # This user can sudo without password
+# Add keys to user's authorized keys file. An error will be raised if no_create_home or system is also set.
+append_userdata "        ssh_authorized_keys:"
+append_userdata "          - $ssh_key"
+append_userdata "    late-commands:"
+append_userdata "      - wget https://raw.githubusercontent.com/jooservices/bash/main/services/mariadb.sh"
+## WORK !!!
+#append_userdata "    write_files:"
+#append_userdata "      - content: hello"
+#append_userdata "        path: /home/soulevil/test.txt"
+##
+#append_userdata "        runcmd:"
+#append_userdata "          - wget https://raw.githubusercontent.com/jooservices/bash/main/services/git.sh"
+#append_userdata "          - chmod +x git.sh"
+
+log "\e[33m👍 Builded user-data\e[0m"
+cat ${tmp_userdata_file}
+
+### END USERDATA ###

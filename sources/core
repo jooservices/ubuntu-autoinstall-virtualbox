@@ -1,14 +1,18 @@
-#!/bin/bash
+source ./sources/logs
+source ./sources/runner
+source ./sources/userdata
 
-function log() {
-    echo >&2 -e "[$(date +"%Y-%m-%d %H:%M:%S")] ${1-}"
-}
+echo -e "\e[33mLoaded: \e[1m"$(basename $BASH_SOURCE) "\e[0m"
 
-function cleanup() {    
+function cleanup() {
+    trap - SIGINT SIGTERM ERR EXIT
     if [ -n "${tmpdir+x}" ]; then
         rm -rf "$tmpdir"
-        log "🚽 Deleted temporary working directory $tmpdir"
+        echo ""
+        log "\e[31m🚽 Deleted temporary working directory $tmpdir\e[0m"
     fi
+
+    exit 0
 }
 
 function die() {
@@ -16,11 +20,6 @@ function die() {
     local code=${2-1} # Bash parameter expansion - default exit status 1. See https://wiki.bash-hackers.org/syntax/pe#use_a_default_value
     log "$msg"
     exit "$code"
-}
-
-function runner()
-{
-    version=$(curl -I -v -s https://github.com/actions/runner/releases/latest 2>&1 | perl -ne 'next unless s/^< location: //; s{.*/v}{}; s/\s+//; print')
 }
 
 function file_exists_check()
@@ -38,11 +37,3 @@ function curl_download()
     curl -NsSL "$1" -o "$2"
     log "👍 Downloaded and saved to $2"
 }
-
-export -f log
-export -f cleanup
-export -f runner
-export -f file_exists_check
-export -f package_check
-export -f curl_download
-export -f die

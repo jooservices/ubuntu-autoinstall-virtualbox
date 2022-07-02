@@ -1,0 +1,6 @@
+echo -e "\e[33mLoaded: \e[1m"$(basename $BASH_SOURCE) "\e[0m"
+
+function runner()
+{
+    version=$(curl -I -v -s https://github.com/actions/runner/releases/latest 2>&1 | perl -ne 'next unless s/^< location: //; s{.*/v}{}; s/\s+//; print')
+}

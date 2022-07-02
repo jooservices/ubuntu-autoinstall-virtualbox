@@ -1,0 +1,6 @@
+echo -e "\e[33mLoaded: \e[1m"$(basename $BASH_SOURCE) "\e[0m"
+
+function append_userdata()
+{
+    printf "$1\n" >> ${tmp_userdata_file}
+}

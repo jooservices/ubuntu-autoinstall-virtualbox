@@ -1,0 +1,20 @@
+echo -e "\e[33mLoaded: \e[1m"$(basename $BASH_SOURCE) "\e[0m"
+
+# UBUNTU
+ubuntu_default_name="ubuntu-$(date +%s)"
+ubuntu_default_hostname="ubuntu"
+ubuntu_default_username="soulevil"
+ubuntu_default_realname="SoulEvil"
+ubuntu_default_password="ubuntu"
+ubuntu_version="20.04"
+ubuntu_name="focal"
+ubuntu_full_name="Focal Fossa"
+
+export ubuntu_default_name
+export ubuntu_default_hostname
+export ubuntu_default_username
+export ubuntu_default_realname
+export ubuntu_default_password
+export ubuntu_version
+export ubuntu_name
+export ubuntu_full_name

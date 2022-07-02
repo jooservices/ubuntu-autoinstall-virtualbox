@@ -1,0 +1,16 @@
+black_text=30
+red_text=31
+green_text=32
+yellow_text=33
+blue_text=34
+magenta_text=35
+cyan_text=36
+light_gray_text=37
+gray_text=90
+light_red_text=91
+light_green_text=92
+light_yellow_text=93
+light_blue_text=94
+light_magenta_text=95
+light_cyan_text=96
+white_text=97

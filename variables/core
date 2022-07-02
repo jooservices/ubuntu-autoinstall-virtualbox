@@ -1,4 +1,8 @@
-#!/bin/bash
+source ./variables/styles
+source ./variables/vm
+source ./variables/ubuntu
+
+echo -e "\e[33mLoaded: \e[1m"$(basename $BASH_SOURCE) "\e[0m"
 
 tmpdir=$(mktemp -d)
 if [[ ! "$tmpdir" || ! -d "$tmpdir" ]]; then
@@ -8,7 +12,6 @@ else
 fi
 
 tmp_userdata_file=${tmpdir}/user-data
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 build_dir="${script_dir}/builds"
 ubuntu_dir="${script_dir}/ubuntu"
 
@@ -17,10 +20,5 @@ today=$(date +"%Y-%m-%d")
 
 salt=$(openssl rand -base64 12)
 
-export tmpdir
-export tmp_userdata_file
-export script_dir
-export build_dir
-export ubuntu_dir
-export today
-export salt
+name="Viet Vu"
+email="jooservices@gmail.com"

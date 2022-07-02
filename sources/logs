@@ -1,0 +1,5 @@
+echo -e "\e[33mLoaded: \e[1m"$(basename $BASH_SOURCE) "\e[0m"
+
+function log() {
+    echo >&2 -e "[$(date +"%Y-%m-%d %H:%M:%S")] ${1-}"
+}

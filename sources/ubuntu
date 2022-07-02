@@ -1,0 +1,16 @@
+# Read Ubuntu data
+log "\e[32m👷 Build Ubuntu\e[0m"
+read -e -p $'\e[37mName\e[0m: ' -i "${ubuntu_default_name}" vmname
+vmname_slug=$(echo "${vmname}" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+read -e -p $'\e[37mHostname\e[0m: ' -i "${ubuntu_default_hostname}" hostname
+read -e -p $'\e[37mRealname\e[0m: ' -i "${ubuntu_default_realname}" realname
+read -e -p $'\e[37mUsername\e[0m: ' -i "${ubuntu_default_username}" username
+read -e -p $'\e[37mPassword\e[0m: ' -i "${ubuntu_default_password}" password
+
+# Encrypt password
+password=$(echo "$password" | openssl passwd -6 -salt "$salt" -stdin)
+
+export hostname
+export username
+export realname
+export password

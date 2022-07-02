@@ -1,8 +1,3 @@
-#!/bin/bash
-
-ubuntu_version="20.04"
-ubuntu_name="focal"
-ubuntu_full_name="Focal Fossa"
 
 # Urls
 ubuntu_daily_live_url="https://cdimage.ubuntu.com/ubuntu-server/${ubuntu_name}/daily-live/current"
@@ -21,7 +16,7 @@ ubuntu_gpg_key_id="843938DF228D22F7B3742BC0D94AA3F0EFE21092"
 
 destination_iso="${build_dir}/${vmname_slug}.iso"
 
-log "🧩 Build ISO: ${vmname_slug}.iso"
+log "\e[32m🧩 Build ISO: ${vmname_slug}.iso\e[0m"
 
 usage() {
         cat <<EOF
